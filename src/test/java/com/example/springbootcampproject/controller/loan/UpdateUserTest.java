@@ -31,11 +31,6 @@ public class UpdateUserTest extends SpringBootcampProjectApplicationTests {
 
     }
 
-//    @BeforeAll
-//    static void beforeAll() {
-//        testRestTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-//    }
-
     @Test
     void should_update_user(){
 
@@ -58,20 +53,19 @@ public class UpdateUserTest extends SpringBootcampProjectApplicationTests {
         userUpdateRequest.setLastName("");
         userUpdateRequest.setPhone(5509009090L);
 
-
+        HttpEntity<UserUpdateRequest> requestEntity = new HttpEntity<>(userUpdateRequest);
 
         //when
         String url = "/user/"+createResponse.getBody().getId();
-//        ResponseEntity<UserUpdateResponse> updateResponse = testRestTemplate
-//                .postForEntity(url, userUpdateRequest, UserUpdateResponse.class);
+
         ResponseEntity<UserUpdateResponse> updateResponse = testRestTemplate
-                .exchange(url, HttpMethod.PATCH, userUpdateRequest, UserUpdateResponse.class);
+                .exchange(url, HttpMethod.PUT, requestEntity, UserUpdateResponse.class);
 
 
         //then
         assertThat(updateResponse.getBody()).isNotNull();
 
-//        assertThat(updateResponse.getBody().getId()).isEqualTo(createResponse.getBody().getId());
+        assertThat(updateResponse.getBody().getId()).isEqualTo(createResponse.getBody().getId());
         assertThat(updateResponse.getBody().getTcNo()).isEqualTo(8374957L);
         assertThat(updateResponse.getBody().getName()).isEqualTo("Kemal");
         assertThat(updateResponse.getBody().getLastName()).isEqualTo("Ates");
@@ -82,7 +76,7 @@ public class UpdateUserTest extends SpringBootcampProjectApplicationTests {
         Optional<UserEntity> userEntity = userJpaRepository.findById(updateResponse.getBody().getId());
 
         assertThat(userEntity.get()).extracting("id", "tcNo", "name", "lastName", "income", "phone")
-                .containsExactly(8374957L, "Kemal", "Ates", 3950, 5509009090L);
+                .containsExactly(createResponse.getBody().getId(), 8374957L, "Kemal", "Ates", 3950, 5509009090L);
         
     }
 }

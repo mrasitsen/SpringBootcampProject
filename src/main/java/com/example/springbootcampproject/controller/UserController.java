@@ -23,7 +23,7 @@ public class UserController {
         return UserCreateResponse.createResponse(id);
     }
 
-    @PatchMapping(value = "/user/{userId}")
+    @PutMapping(value = "/user/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public UserUpdateResponse updateUser(@RequestBody UserUpdateRequest userUpdateRequest, @PathVariable Long userId){
         User user = userUpdateRequest.convertToUser();
